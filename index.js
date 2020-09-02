@@ -56,18 +56,18 @@ app.post('/ac', urlencodedParser, function(req, res){
     
     switch (nlen) {
         case 1:
-            var res = data[palabra[0]]['&'];
+            var resp = data[palabra[0]]['&'];
         break;
         case 2:
-            var res = data[palabra[0]][palabra[1]]['&'];
+            var resp = data[palabra[0]][palabra[1]]['&'];
         break;
         case 2:
-            var res = data[palabra[0]][palabra[1]][palabra[2]]['&'];
+            var resp = data[palabra[0]][palabra[1]][palabra[2]]['&'];
         break;
     }
     
 
-    res.end(JSON.stringify(res));
+    res.end(JSON.stringify(resp));
 
 });
 
