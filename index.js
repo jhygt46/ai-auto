@@ -44,7 +44,7 @@ app.get('/', function(req, res){
 
 var data = { a: "1", b: "2" };
 
-app.get('/ac', urlencodedParser, function(req, res){
+app.post('/ac', urlencodedParser, function(req, res){
 
     res.setHeader('Content-Type', 'application/json');
     
