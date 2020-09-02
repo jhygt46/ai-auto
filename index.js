@@ -42,16 +42,15 @@ app.get('/', function(req, res){
 
 });
 
-var data = { a: "1", b: "2" };
+var data = { "r": { "e": { "&": ["Buena", "Nelson"] } } };
 
 app.post('/ac', urlencodedParser, function(req, res){
 
     res.setHeader('Content-Type', 'application/json');
     
-    var palabra = "Rest";
-    var palabra_ant = "Re";
+    var palabra = "re";
+    var palabra_ant = "re";
     var peticiones = helpers.combinaciones(palabra, palabra_ant);
-    console.log(peticiones);
     var nlen = palabra.length;
 
     
