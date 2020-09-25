@@ -207,10 +207,21 @@ function delete_obj(obj){
 function cambioFiltro(obj){
 
     var path = obj.n;
-    fs.access('./filtros/'+path, fs.F_OK, (err) => { 
-        if(!err){ fs.readFile('./filtros/'+path, (err, data) => { 
-            if(!err){ fs.writeFile('./filtros/'+path, JSON.stringify(helpers.filtroCambios(JSON.parse(data), obj.c)), (err) => { if(err){ console.error(err); return }}); 
-    }else{ console.error(err); return }}); }else{ console.error(err); return }})
+    fs.access('./filtros/'+path, fs.F_OK, (err) => {
+        if(!err){
+            fs.readFile('./filtros/'+path, (err, data) => {
+                if(!err){ 
+                    fs.writeFile('./filtros/'+path, JSON.stringify(helpers.filtroCambios(JSON.parse(data), obj.c)), (err) => { 
+                        if(err){ console.error(err); return }
+                    }); 
+                }else{ console.error(err); return }
+            }); 
+        }else{ 
+            fs.writeFile('./filtros/'+path, JSON.stringify(helpers.filtroCambios(JSON.parse(data), obj.c)), (err) => { 
+                if(err){ console.error(err); return }
+            }); 
+        }
+    })
     
 }
 
