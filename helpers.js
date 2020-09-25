@@ -42,6 +42,7 @@ module.exports = {
         if(campo.tipo == 2){
             return { n: obj.val, v: 0 }
         }
+        console.log(campo);
     },
     ca_add_campo: function(campos, cambio){
         if(campos == undefined){ campos = [] }
