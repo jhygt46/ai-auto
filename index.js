@@ -251,7 +251,7 @@ app.get('/filtro', function(req, res){
         if(!err){
             fs.readFile('./filtros/'+req.query.f, (err, data) => { 
                 if(!err){ 
-                    res.end(JSON.stringify(data, null, 4));
+                    res.end(JSON.stringify(JSON.parse(data), null, 4));
                 }else{ 
                     res.end("Error");
                 }
