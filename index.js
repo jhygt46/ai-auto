@@ -225,8 +225,6 @@ function cambioFiltro(obj){
     
 }
 
-
-
 app.get('/', function(req, res){
 
     res.setHeader('Content-Type', 'application/json');
