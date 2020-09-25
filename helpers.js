@@ -54,6 +54,7 @@ module.exports = {
         return campos;
     },
     filtroCambios: function(json, cambios){
+        if(json === null){ json = {} }
         for(var i=0, ilen=cambios.length; i<ilen; i++){
             switch(cambios[i].acc){
                 case "add_campo":

@@ -216,10 +216,10 @@ function cambioFiltro(obj){
                     }); 
                 }else{ console.error(err); return }
             }); 
-        }else{ 
-            fs.writeFile('./filtros/'+path, JSON.stringify(helpers.filtroCambios(JSON.parse(data), obj.c)), (err) => { 
+        }else{
+            fs.writeFile('./filtros/'+path, JSON.stringify(helpers.filtroCambios(null, obj.c)), (err) => { 
                 if(err){ console.error(err); return }
-            }); 
+            });
         }
     })
     
