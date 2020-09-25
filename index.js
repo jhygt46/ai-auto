@@ -248,10 +248,10 @@ app.get('/filtro', function(req, res){
 
     res.setHeader('Content-Type', 'application/json');
     fs.access('./filtros/'+req.query.f, fs.F_OK, (err) => { 
-        if(!err){ 
+        if(!err){
             fs.readFile('./filtros/'+req.query.f, (err, data) => { 
                 if(!err){ 
-                    res.end(data);
+                    res.end(JSON.stringify(data, null, 4));
                 }else{ 
                     res.end("Error");
                 }
