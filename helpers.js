@@ -36,13 +36,12 @@ module.exports = {
         }
     },
     objeto_opcion_tipo: function(obj, campo){
-        if(campo.tipo == 1){
+        if(campo.t == 1){
             return { n: obj.val, v: 0 }
         }
-        if(campo.tipo == 2){
+        if(campo.t == 2){
             return { n: obj.val, v: 0 }
         }
-        console.log(campo);
     },
     ca_add_campo: function(campos, cambio){
         if(campos == undefined){ campos = [] }
