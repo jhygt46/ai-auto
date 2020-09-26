@@ -234,16 +234,6 @@ app.get('/', function(req, res){
     res.end("OK");
 
 });
-app.post('/get_filtro', function(req, res){
-
-    res.setHeader('Content-Type', 'application/json');
-    var path = req.body.num;
-    fs.access('./filtros/'+path, fs.F_OK, (err) => { 
-    if(!err){ fs.readFile('./filtros/'+path, (err, data) => { 
-        if(!err){ res.end(data) }else{ console.error(err); return }
-    }); }else{ console.error(err); return }})
-
-});
 app.get('/filtro', function(req, res){
 
     res.setHeader('Content-Type', 'application/json');
@@ -270,12 +260,24 @@ app.get('/del', function(req, res){
     res.end(JSON.stringify(data, null, 4));
 
 });
+
 app.post('/ac', urlencodedParser, function(req, res){
 
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify(listas_palabras(req.body.palabra, req.body.palabra_ant)));
     
 });
+app.post('/get_filtro', function(req, res){
+
+    res.setHeader('Content-Type', 'application/json');
+    var path = req.body.num;
+    fs.access('./filtros/'+path, fs.F_OK, (err) => { 
+    if(!err){ fs.readFile('./filtros/'+path, (err, data) => { 
+        if(!err){ res.end(data) }else{ console.error(err); return }
+    }); }else{ console.error(err); return }})
+
+});
+
 app.listen(config.port, () => {
     fs.appendFile('init.log', 'Servidor iniciado a las ' + new Date().toLocaleString() + ' en puerto ' + config.port + '\n', (err) => { if(err) return console.log(err); console.log("SERVER START") });
     var objs = [{ n: 're', i: 1 }, { n: 'res', i: 2 }, { n: 'rest', i: 3 }, { n: 'resta', i: 4 }, { n: 'restau', i: 5 }, { n: 'restaur', i: 6 }];
