@@ -1,5 +1,3 @@
-
-
 module.exports = {
     compare_objetos: function(objs, obj, base = ""){
         var obj_key = Object.keys(obj);
@@ -70,4 +68,4 @@ module.exports = {
         }
         return json;
     }
-};
+}
