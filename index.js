@@ -225,12 +225,12 @@ function cambioFiltro(obj){
     
 }
 
-app.get('/', function(req, res){
+app.post('/cambios_filtros', function(req, res){
 
     res.setHeader('Content-Type', 'application/json');
-    var obj = { n: 'rest', p: 0 };
-    console.log(get_palabra(obj));
-    cambioFiltro({ n: "a", c: [{ acc: 'add_campo', tipo: 1, nombre: 'opciones' }, { acc: 'add_opcion_campo', pos: -1, val: 'BuEnA Enestor' }, { acc: 'add_opcion_campo', pos: -1, val: 'BuEnA BUENA' }] });
+    //var obj = { n: 'rest', p: 0 };
+    //console.log(get_palabra(obj));
+    cambioFiltro({ n: req.body.filtro, c: req.body.cambios });
     res.end("OK");
 
 });
