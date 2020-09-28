@@ -225,6 +225,13 @@ function cambioFiltro(obj){
     
 }
 
+app.post('/get_palabra', function(req, res){
+
+    res.setHeader('Content-Type', 'application/json');
+    //var obj = { n: 'rest', p: 0 };
+    res.end(JSON.stringify(get_palabra(obj)));
+
+});
 app.post('/cambios_filtros', function(req, res){
 
     res.setHeader('Content-Type', 'application/json');
@@ -232,24 +239,6 @@ app.post('/cambios_filtros', function(req, res){
     //console.log(get_palabra(obj));
     cambioFiltro({ n: req.body.filtro, c: req.body.cambios });
     res.end(JSON.stringify("{ op: 1}"));
-
-});
-app.get('/filtro', function(req, res){
-
-    res.setHeader('Content-Type', 'application/json');
-    fs.access('./filtros/'+req.query.f, fs.F_OK, (err) => {
-        if(!err){
-            fs.readFile('./filtros/'+req.query.f, (err, data) => {
-                if(!err){
-                    res.end(JSON.stringify(JSON.parse(data), null, 4));
-                }else{
-                    res.end("Error");
-                }
-            });
-        }else{ 
-            res.end("Error");
-        }
-    });
 
 });
 app.get('/del', function(req, res){
@@ -260,7 +249,6 @@ app.get('/del', function(req, res){
     res.end(JSON.stringify(data, null, 4));
 
 });
-
 app.post('/ac', urlencodedParser, function(req, res){
 
     res.setHeader('Content-Type', 'application/json');
@@ -270,14 +258,13 @@ app.post('/ac', urlencodedParser, function(req, res){
 app.post('/get_filtro', function(req, res){
 
     res.setHeader('Content-Type', 'application/json');
-    var path = req.body.num;
-    fs.access('./filtros/'+path, fs.F_OK, (err) => { 
-    if(!err){ fs.readFile('./filtros/'+path, (err, data) => { 
-        if(!err){ res.end(data) }else{ console.error(err); return }
-    }); }else{ console.error(err); return }})
+    var path = req.body.f;
+    fs.access('./filtros/'+path, fs.F_OK, (err) => {
+    if(!err){ fs.readFile('./filtros/'+path, (err, data) => {
+        if(!err){ res.end(data) }else{ res.end("Error") }
+    }); }else{ res.end("Error") }});
 
 });
-
 app.listen(config.port, () => {
     fs.appendFile('init.log', 'Servidor iniciado a las ' + new Date().toLocaleString() + ' en puerto ' + config.port + '\n', (err) => { if(err) return console.log(err); console.log("SERVER START") });
     var objs = [{ n: 're', i: 1 }, { n: 'res', i: 2 }, { n: 'rest', i: 3 }, { n: 'resta', i: 4 }, { n: 'restau', i: 5 }, { n: 'restaur', i: 6 }];
