@@ -52,10 +52,7 @@ module.exports = {
         return campos;
     },
     filtroCambios: function(json, cambios){
-        console.log(json);
-        console.log("BUENA NELSOn");
-        console.log(cambios);
-        if(json === null){ json = {} }else{ /* VERIFICAR SI EXISTE */ }
+        if(json === null){ json = {} }else{ console.log("VER SI EXISTE"); /* VERIFICAR SI EXISTE */ }
         for(var i=0, ilen=cambios.length; i<ilen; i++){
             switch(cambios[i].acc){
                 case "add_campo":
@@ -66,6 +63,6 @@ module.exports = {
                     break;
               }
         }
-        return json;
+        return null;
     }
 }
