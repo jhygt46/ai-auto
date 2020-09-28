@@ -231,7 +231,7 @@ app.post('/cambios_filtros', function(req, res){
     //var obj = { n: 'rest', p: 0 };
     //console.log(get_palabra(obj));
     cambioFiltro({ n: req.body.filtro, c: req.body.cambios });
-    res.end("OK");
+    res.end("{ op: 1 }");
 
 });
 app.get('/filtro', function(req, res){
