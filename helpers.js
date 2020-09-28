@@ -63,6 +63,6 @@ module.exports = {
                     break;
               }
         }
-        return null;
+        return json;
     }
 }
