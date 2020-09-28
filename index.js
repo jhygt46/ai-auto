@@ -237,15 +237,15 @@ app.post('/cambios_filtros', function(req, res){
 app.get('/filtro', function(req, res){
 
     res.setHeader('Content-Type', 'application/json');
-    fs.access('./filtros/'+req.query.f, fs.F_OK, (err) => { 
+    fs.access('./filtros/'+req.query.f, fs.F_OK, (err) => {
         if(!err){
-            fs.readFile('./filtros/'+req.query.f, (err, data) => { 
-                if(!err){ 
+            fs.readFile('./filtros/'+req.query.f, (err, data) => {
+                if(!err){
                     res.end(JSON.stringify(JSON.parse(data), null, 4));
-                }else{ 
+                }else{
                     res.end("Error");
                 }
-            })
+            });
         }else{ 
             res.end("Error");
         }
