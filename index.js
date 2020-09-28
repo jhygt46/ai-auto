@@ -230,7 +230,7 @@ app.post('/cambios_filtros', function(req, res){
     res.setHeader('Content-Type', 'application/json');
     //var obj = { n: 'rest', p: 0 };
     //console.log(get_palabra(obj));
-    cambioFiltro({ n: req.body.filtro, c: req.body.cambios });
+    //cambioFiltro({ n: req.body.filtro, c: req.body.cambios });
     res.end("{ op: 1 }");
 
 });
