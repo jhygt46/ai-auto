@@ -5,7 +5,6 @@ var config = JSON.parse(fs.readFileSync('./config.json'));
 /*
 var io = require('socket.io-client');
 var socket = io.connect(config.socket_url, { reconnect: true });
-
 socket.on('connect', function() {
     console.log('Connected!');
 });
@@ -19,6 +18,7 @@ socket.onevent = function(packet){
 socket.on('disconnect', function() {
     console.log('Disconnected!');
 });
+console.log(get_palabra({ n: 'rest', p: 0 }));
 */
 
 const express = require("express");
@@ -204,34 +204,30 @@ function delete_obj(obj){
     }
 
 }
-function cambioFiltro2(obj){
-
+function cambioFiltro(obj){
     var path = obj.n;
     fs.access('./filtros/'+path, fs.F_OK, (err) => {
         if(!err){
             fs.readFile('./filtros/'+path, (err, data) => {
                 if(!err){ 
                     fs.writeFile('./filtros/'+path, JSON.stringify(helpers.filtroCambios(JSON.parse(data), obj.c)), (err) => { 
-                        if(err){ console.error(err); return }
+                        if(err){ ErrorAppend(err); return false }else{ return true }
                     }); 
-                }else{ console.error(err); return }
+                }else{ ErrorAppend(err); return false }
             }); 
         }else{
             fs.writeFile('./filtros/'+path, JSON.stringify(helpers.filtroCambios(null, obj.c)), (err) => { 
-                if(err){ console.error(err); return }
+                if(err){ ErrorAppend(err); return false }else{ return true }
             });
         }
     })
-    
+}
+function ErrorAppend(err){
+    fs.appendFile('error.log', new Date().toLocaleString() + ' => ' + err + '\n');
 }
 
-app.post('/get_palabra', function(req, res){
 
-    res.setHeader('Content-Type', 'application/json');
-    //var obj = { n: 'rest', p: 0 };
-    res.end(JSON.stringify(get_palabra(obj)));
 
-});
 
 app.get('/del', function(req, res){
 
@@ -242,33 +238,35 @@ app.get('/del', function(req, res){
 
 });
 
+
+
+
 app.post('/cambios_filtros', function(req, res){
-
     res.setHeader('Content-Type', 'application/json');
-    //var obj = { n: 'rest', p: 0 };
-    //console.log(get_palabra(obj));
-    helpers.cambioFiltro({ n: req.body.filtro, c: req.body.cambios });
-    res.end(JSON.stringify("{ op: 1 }"));
-
+    if(cambioFiltro({ n: req.body.filtro, c: req.body.cambios })){
+        res.end(JSON.stringify("{ op: 1 }"));
+    }else{
+        res.end(JSON.stringify("{ op: 2 }"));
+    }
+});
+app.post('/get_palabra', function(req, res){
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify(get_palabra(obj)));
 });
 app.post('/ac', urlencodedParser, function(req, res){
-
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify(listas_palabras(req.body.palabra, req.body.palabra_ant)));
-    
 });
 app.post('/get_filtro', function(req, res){
-
     res.setHeader('Content-Type', 'application/json');
     var path = req.body.f;
     fs.access('./filtros/'+path, fs.F_OK, (err) => {
     if(!err){ fs.readFile('./filtros/'+path, (err, data) => {
         if(!err){ res.end(data) }else{ res.end("Error") }
     }); }else{ res.end("Error") }});
-
 });
 app.listen(config.port, () => {
-    fs.appendFile('init.log', 'Servidor iniciado a las ' + new Date().toLocaleString() + ' en puerto ' + config.port + '\n', (err) => { if(err) return console.log(err); console.log("SERVER START") });
+    fs.appendFile('init.log', 'Servidor iniciado a las ' + new Date().toLocaleString() + ' en puerto ' + config.port + '\n', (err) => { if(err) ErrorAppend(err); console.log("SERVER START") });
     var objs = [{ n: 're', i: 1 }, { n: 'res', i: 2 }, { n: 'rest', i: 3 }, { n: 'resta', i: 4 }, { n: 'restau', i: 5 }, { n: 'restaur', i: 6 }];
     for(var i=0, ilen=objs.length; i<ilen; i++){
         add_palabra(objs[i], 0);
