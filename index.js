@@ -243,6 +243,7 @@ app.get('/del', function(req, res){
 
 app.post('/cambios_filtros', function(req, res){
     res.setHeader('Content-Type', 'application/json');
+    console.log(cambioFiltro({ n: req.body.filtro, c: req.body.cambios }));
     if(cambioFiltro({ n: req.body.filtro, c: req.body.cambios })){
         res.end(JSON.stringify("{ op: 1 }"));
     }else{
