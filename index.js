@@ -204,7 +204,7 @@ function delete_obj(obj){
     }
 
 }
-function cambioFiltro(obj){
+function cambioFiltro2(obj){
 
     var path = obj.n;
     fs.access('./filtros/'+path, fs.F_OK, (err) => {
@@ -232,21 +232,23 @@ app.post('/get_palabra', function(req, res){
     res.end(JSON.stringify(get_palabra(obj)));
 
 });
-app.post('/cambios_filtros', function(req, res){
 
-    res.setHeader('Content-Type', 'application/json');
-    //var obj = { n: 'rest', p: 0 };
-    //console.log(get_palabra(obj));
-    cambioFiltro({ n: req.body.filtro, c: req.body.cambios });
-    res.end(JSON.stringify("{ op: 1}"));
-
-});
 app.get('/del', function(req, res){
 
     res.setHeader('Content-Type', 'application/json');
     var obj = { n: 'rest', i: 3 };
     delete_obj(obj);
     res.end(JSON.stringify(data, null, 4));
+
+});
+
+app.post('/cambios_filtros', function(req, res){
+
+    res.setHeader('Content-Type', 'application/json');
+    //var obj = { n: 'rest', p: 0 };
+    //console.log(get_palabra(obj));
+    cambioFiltro({ n: req.body.filtro, c: req.body.cambios });
+    res.end(JSON.stringify("{ op: 1 }"));
 
 });
 app.post('/ac', urlencodedParser, function(req, res){
