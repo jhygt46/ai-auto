@@ -211,13 +211,13 @@ function cambioFiltro(obj){
             fs.readFile('./filtros/'+path, (err, data) => {
                 if(!err){ 
                     fs.writeFile('./filtros/'+path, JSON.stringify(helpers.filtroCambios(JSON.parse(data), obj.c)), (err) => { 
-                        if(err){ ErrorAppend(err); return false }else{ return true }
+                        if(err){ ErrorAppend(err) }
                     }); 
-                }else{ ErrorAppend(err); return false }
+                }else{ ErrorAppend(err) }
             }); 
         }else{
             fs.writeFile('./filtros/'+path, JSON.stringify(helpers.filtroCambios(null, obj.c)), (err) => { 
-                if(err){ ErrorAppend(err); return false }else{ return true }
+                if(err){ ErrorAppend(err) }
             });
         }
     })
@@ -243,12 +243,8 @@ app.get('/del', function(req, res){
 
 app.post('/cambios_filtros', function(req, res){
     res.setHeader('Content-Type', 'application/json');
-    console.log(cambioFiltro({ n: req.body.filtro, c: req.body.cambios }));
-    if(cambioFiltro({ n: req.body.filtro, c: req.body.cambios })){
-        res.end(JSON.stringify("{ op: 1 }"));
-    }else{
-        res.end(JSON.stringify("{ op: 2 }"));
-    }
+    cambioFiltro({ n: req.body.filtro, c: req.body.cambios });
+    res.end(JSON.stringify("{ op: 1 }"));
 });
 app.post('/get_palabra', function(req, res){
     res.setHeader('Content-Type', 'application/json');
