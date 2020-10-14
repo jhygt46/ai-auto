@@ -1,6 +1,16 @@
 var fs = require('fs');
 var helpers = require('./helpers');
-var config = JSON.parse(fs.readFileSync('./config.json'));
+
+const readline = require('readline');
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+const mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/test-db')
+    .then(db => { console.log('DB CONNECT') })
+    .catch(err => { console.log(err) });
 
 /*
 var io = require('socket.io-client');
@@ -204,47 +214,55 @@ function delete_obj(obj){
     }
 
 }
-function cambioFiltro(obj){
-    var path = obj.n;
-    fs.access('./filtros/'+path, fs.F_OK, (err) => {
-        if(!err){
-            fs.readFile('./filtros/'+path, (err, data) => {
-                if(!err){ 
-                    fs.writeFile('./filtros/'+path, JSON.stringify(helpers.filtroCambios(JSON.parse(data), obj.c)), (err) => { 
-                        if(err){ ErrorAppend(err) }
-                    }); 
-                }else{ ErrorAppend(err) }
-            }); 
-        }else{
-            fs.writeFile('./filtros/'+path, JSON.stringify(helpers.filtroCambios(null, obj.c)), (err) => { 
-                if(err){ ErrorAppend(err) }
-            });
-        }
-    })
+function cambioFiltro(param){
+    return new Promise((resolve, reject) => {
+        var path = param.n;
+        fs.access('./filtros/'+path, fs.F_OK, (err) => {
+            if(!err){
+                fs.readFile('./filtros/'+path, (err, data) => {
+                    if(!err){
+                        helpers.filtroCambios(JSON.parse(data), param.c).then((res) => { 
+                            fs.writeFile('./filtros/'+path, JSON.stringify(res), (err) => { 
+                                if(err){ reject(err.message) }else{ resolve() }
+                            });
+                        }).catch((err) => { reject(err) });
+                    }else{ reject(err) }
+                });
+            }else{
+                helpers.filtroCambios({}, param.c).then((res) => {
+                    fs.writeFile('./filtros/'+path, JSON.stringify(res), (err) => { 
+                        if(err){ reject(err.message) }else{ resolve() }
+                    });
+                }).catch((err) => { reject(err) });
+            }
+        })
+    });
 }
 function ErrorAppend(err){
     fs.appendFile('error.log', new Date().toLocaleString() + ' => ' + err + '\n');
+    console.log(err);
 }
 
+function escribirFiltro(path, campos, cambios){
+    fs.writeFile('./filtros/'+path, JSON.stringify(helpers.filtroCambios(campos, cambios )));
+}
 
-
-
-app.get('/del', function(req, res){
+app.get('/', function(req, res){
 
     res.setHeader('Content-Type', 'application/json');
-    var obj = { n: 'rest', i: 3 };
-    delete_obj(obj);
-    res.end(JSON.stringify(data, null, 4));
 
-});
+    if(req.query.tipo == 0){
+        var cambios = [{ acc: 'add_campo', tipo: 1, nombre: 'opciones' }];
+    }
+    if(req.query.tipo == 1){
+        var cambios = [{ acc: 'add_campo', tipo: 1, nombre: 'opciones' }, { acc: 'add_opcion_campo', pos: -1, val: 'BuEnA Enestor' }, { acc: 'add_opcion_campo', pos: -1, val: 'BuEnA BUENA' }];
+    }
+    if(req.query.tipo == 2){
+        var cambios = [{ acc: 'add_campo', tipo: 1, nombre: 'opciones' }, { acc: 'add_opcion_campo', pos: -1, val: 'BuEnA Enestor' }, { acc: 'add_opcion_campo', pos: -1, val: 'BuEnA BUENA' }];
+    }
 
+    cambioFiltro({ n: 'a', c: cambios }).then(() => { res.end(JSON.stringify({ op: 1 })) }).catch((err) => { res.end(JSON.stringify({ op: 2 })) })
 
-
-
-app.post('/cambios_filtros', function(req, res){
-    res.setHeader('Content-Type', 'application/json');
-    cambioFiltro({ n: req.body.filtro, c: req.body.cambios });
-    res.end(JSON.stringify("{ op: 1 }"));
 });
 app.post('/get_palabra', function(req, res){
     res.setHeader('Content-Type', 'application/json');
@@ -262,10 +280,61 @@ app.post('/get_filtro', function(req, res){
         if(!err){ res.end(data) }else{ res.end("Error") }
     }); }else{ res.end("Error") }});
 });
-app.listen(config.port, () => {
-    fs.appendFile('init.log', 'Servidor iniciado a las ' + new Date().toLocaleString() + ' en puerto ' + config.port + '\n', (err) => { if(err) ErrorAppend(err); console.log("SERVER START") });
-    var objs = [{ n: 're', i: 1 }, { n: 'res', i: 2 }, { n: 'rest', i: 3 }, { n: 'resta', i: 4 }, { n: 'restau', i: 5 }, { n: 'restaur', i: 6 }];
-    for(var i=0, ilen=objs.length; i<ilen; i++){
-        add_palabra(objs[i], 0);
+app.get('/get_filtro', function(req, res){
+    res.setHeader('Content-Type', 'application/json');
+    var path = req.query.f;
+    fs.access('./filtros/'+path, fs.F_OK, (err) => {
+    if(!err){ fs.readFile('./filtros/'+path, (err, data) => {
+        if(!err){ res.end(JSON.stringify(JSON.parse(data), null, 4)) }else{ res.end("Error") }
+    }); }else{ res.end("Error") }});
+});
+app.get('/del', function(req, res){
+    res.setHeader('Content-Type', 'application/json');
+    var obj = { n: 'rest', i: 3 };
+    delete_obj(obj);
+    res.end(JSON.stringify(data, null, 4));
+});
+
+
+
+var file = "config.json";
+fs.access('./'+file, fs.F_OK, (err) => {
+    if(err){
+        rl.question('Seleccione Puerto : ', (puerto) => {
+            rl.question('Seleccione IP socket : ', (socket) => {
+                var conf = new Object();
+                conf.post = puerto;
+                conf.socket = socket;
+                fs.writeFile('./'+file, JSON.stringify(conf), (err) => { 
+                    if(!err){ 
+                        app.listen(puerto, () => {
+                            fs.appendFile('init.log', 'Servidor iniciado a las ' + new Date().toLocaleString() + ' en puerto ' + puerto + '\n', (err) => { if(err){ ErrorAppend(err) }else{ console.log("SERVER START") } });
+                        });
+                    }else{
+                        ErrorAppend("Error al escribir "+file);
+                    }
+                });
+                rl.close();
+            });
+        });
+    }else{
+        fs.readFile('./'+file, (err, data) => {
+            if(!err){
+                var conf = JSON.parse(data);
+                app.listen(conf.port, () => {
+                    fs.appendFile('init.log', 'Servidor iniciado a las ' + new Date().toLocaleString() + ' en puerto ' + conf.port + '\n', (err) => { if(err){ ErrorAppend(err) }else{ console.log("SERVER START") } });
+                });
+            }else{
+                ErrorAppend("Error al leer "+file);
+            }
+        });
     }
 });
+
+
+/*
+var objs = [{ n: 're', i: 1 }, { n: 'res', i: 2 }, { n: 'rest', i: 3 }, { n: 'resta', i: 4 }, { n: 'restau', i: 5 }, { n: 'restaur', i: 6 }];
+for(var i=0, ilen=objs.length; i<ilen; i++){
+    add_palabra(objs[i], 0);
+}
+*/

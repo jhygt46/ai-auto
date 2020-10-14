@@ -6,6 +6,7 @@ ehthumbs_vista.db
 config.json
 init.log
 node_modules/
+filtros/
 
 # Folder config file
 Desktop.ini
