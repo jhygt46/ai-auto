@@ -274,7 +274,7 @@ app.get('/', function(req, res){
 });
 app.get('/get_palabra', function(req, res){
     res.setHeader('Content-Type', 'application/json');
-    console.log(Task.find());
+    console.log(Task.find('tasks'));
     res.end(JSON.stringify({ op: 1 }));
 });
 app.post('/ac', urlencodedParser, function(req, res){
