@@ -12,6 +12,17 @@ mongoose.connect('mongodb://localhost/test-db')
     .then(db => { console.log('DB CONNECT') })
     .catch(err => { console.log(err) });
 
+const TaskSchema = new Schema({
+    titulo: String,
+    descripcion: String,
+    status: {
+        type: Boolean,
+        default: false
+    }
+});
+
+var Task = mongoose.model('tasks', TaskSchema);
+
 /*
 var io = require('socket.io-client');
 var socket = io.connect(config.socket_url, { reconnect: true });
@@ -250,23 +261,21 @@ function escribirFiltro(path, campos, cambios){
 app.get('/', function(req, res){
 
     res.setHeader('Content-Type', 'application/json');
+    //if(req.query.tipo == 0){ var cambios = [{ acc: 'add_campo', tipo: 1, nombre: 'opciones' }] }
+    //if(req.query.tipo == 1){ var cambios = [{ acc: 'add_campo', tipo: 1, nombre: 'opciones' }, { acc: 'add_opcion_campo', pos: -1, val: 'BuEnA Enestor' }, { acc: 'add_opcion_campo', pos: -1, val: 'BuEnA BUENA' }] }
+    //if(req.query.tipo == 2){ var cambios = [{ acc: 'add_campo', tipo: 1, nombre: 'opciones' }, { acc: 'add_opcion_campo', pos: -1, val: 'BuEnA Enestor' }, { acc: 'add_opcion_campo', pos: -1, val: 'BuEnA BUENA' }] }
+    //cambioFiltro({ n: 'a', c: cambios }).then(() => { res.end(JSON.stringify({ op: 1 })) }).catch((err) => { res.end(JSON.stringify({ op: 2 })) })
 
-    if(req.query.tipo == 0){
-        var cambios = [{ acc: 'add_campo', tipo: 1, nombre: 'opciones' }];
-    }
-    if(req.query.tipo == 1){
-        var cambios = [{ acc: 'add_campo', tipo: 1, nombre: 'opciones' }, { acc: 'add_opcion_campo', pos: -1, val: 'BuEnA Enestor' }, { acc: 'add_opcion_campo', pos: -1, val: 'BuEnA BUENA' }];
-    }
-    if(req.query.tipo == 2){
-        var cambios = [{ acc: 'add_campo', tipo: 1, nombre: 'opciones' }, { acc: 'add_opcion_campo', pos: -1, val: 'BuEnA Enestor' }, { acc: 'add_opcion_campo', pos: -1, val: 'BuEnA BUENA' }];
-    }
 
-    cambioFiltro({ n: 'a', c: cambios }).then(() => { res.end(JSON.stringify({ op: 1 })) }).catch((err) => { res.end(JSON.stringify({ op: 2 })) })
+    const task = new Task({ titulo: 'Buena', descripcion: 'Nelson', status: true });
+    task.save();
+    res.end({ op: 1 });
 
 });
 app.post('/get_palabra', function(req, res){
     res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify(get_palabra(obj)));
+    console.log(Task.find());
+    res.end({ op: 1 });
 });
 app.post('/ac', urlencodedParser, function(req, res){
     res.setHeader('Content-Type', 'application/json');
