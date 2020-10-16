@@ -8,6 +8,8 @@ const rl = readline.createInterface({
 });
 
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
 mongoose.connect('mongodb://localhost/test-db')
     .then(db => { console.log('DB CONNECT') })
     .catch(err => { console.log(err) });
