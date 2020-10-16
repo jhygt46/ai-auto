@@ -255,7 +255,6 @@ function ErrorAppend(err){
     fs.appendFile('error.log', new Date().toLocaleString() + ' => ' + err + '\n');
     console.log(err);
 }
-
 function escribirFiltro(path, campos, cambios){
     fs.writeFile('./filtros/'+path, JSON.stringify(helpers.filtroCambios(campos, cambios )));
 }
@@ -267,7 +266,6 @@ app.get('/', function(req, res){
     //if(req.query.tipo == 1){ var cambios = [{ acc: 'add_campo', tipo: 1, nombre: 'opciones' }, { acc: 'add_opcion_campo', pos: -1, val: 'BuEnA Enestor' }, { acc: 'add_opcion_campo', pos: -1, val: 'BuEnA BUENA' }] }
     //if(req.query.tipo == 2){ var cambios = [{ acc: 'add_campo', tipo: 1, nombre: 'opciones' }, { acc: 'add_opcion_campo', pos: -1, val: 'BuEnA Enestor' }, { acc: 'add_opcion_campo', pos: -1, val: 'BuEnA BUENA' }] }
     //cambioFiltro({ n: 'a', c: cambios }).then(() => { res.end(JSON.stringify({ op: 1 })) }).catch((err) => { res.end(JSON.stringify({ op: 2 })) })
-
 
     const task = new Task({ titulo: 'Buena', descripcion: 'Nelson', status: true });
     task.save();
