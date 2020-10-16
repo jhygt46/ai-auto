@@ -272,7 +272,7 @@ app.get('/', function(req, res){
     res.end(JSON.stringify({ op: 1 }));
 
 });
-app.post('/get_palabra', function(req, res){
+app.get('/get_palabra', function(req, res){
     res.setHeader('Content-Type', 'application/json');
     console.log(Task.find());
     res.end({ op: 1 });
